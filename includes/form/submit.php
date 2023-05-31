@@ -10,17 +10,12 @@
     $questions = $query->fetchAll();
 
     // get the name & email from the POST data
-    $name = $_POST['name'];
-    $email = $_POST['email'];
 
     /* 
         do error checking
         - make sure the name & email fields are not empty
         - make sure all the questions are answered
     */
-if ( empty( $name ) || empty( $email ) ){
-    $error = 'All fields are required';
-}
 
 
     // loop through all the questions to make sure all the answers are set
@@ -41,13 +36,12 @@ if ( empty( $name ) || empty( $email ) ){
     // if no error, loop through all the questions to insert the answer to the results table
     foreach ( $questions as $question ) {
         // sql recipe
-        $sql = "INSERT INTO results ( name, email, question_id, answer ) VALUES ( :name, :email, :question_id, :answer )";
+        $sql = "INSERT INTO results ( user_id, question_id, answer ) VALUES ( :user_id, :question_id, :answer )";
         // prepare
         $query = $database->prepare($sql);
         // execute
         $query->execute([
-        'name'=>$name,
-         'email'=>$email,
+        'user_id'=>$_SESSION['user']['id'],
           'question_id'=>$question['id'],
           'answer'=>$_POST['q'.$question['id']]
         ]);
